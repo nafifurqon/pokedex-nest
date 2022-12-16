@@ -7,9 +7,11 @@ import {
   ManyToMany,
   ManyToOne,
   JoinTable,
+  OneToOne,
 } from 'typeorm';
 import { BaseType } from './base_type.entity';
 import { MonsterType } from './monster_type.entity';
+import { Stat } from './stat.entity';
 
 @Entity()
 export class Monster {
@@ -43,4 +45,12 @@ export class Monster {
     },
   })
   monsterTypes: MonsterType[];
+
+  // @Column('uuid')
+  // statId: string;
+
+  @ApiProperty()
+  @OneToOne(() => Stat, (stat) => stat.monster, { onDelete: 'SET NULL' })
+  @JoinColumn()
+  stat: Stat;
 }

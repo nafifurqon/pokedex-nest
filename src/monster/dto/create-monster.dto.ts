@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MaxLength, IsUUID } from 'class-validator';
+import { CreateStatDto } from 'src/monster/dto/create-stat.dto';
 
 export class CreateMonsterDto {
   @ApiProperty()
@@ -16,4 +17,7 @@ export class CreateMonsterDto {
   @ApiProperty()
   @IsUUID('all', { each: true })
   monsterTypes: string[];
+
+  @ApiProperty({ type: CreateStatDto })
+  stat: CreateStatDto;
 }

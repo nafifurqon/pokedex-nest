@@ -13,7 +13,7 @@ export class BaseTypeService {
   ) {}
 
   async create(createBaseTypeDto: CreateBaseTypeDto): Promise<BaseType> {
-    const newBaseType = await this.basetypesRepository.create({
+    const newBaseType = this.basetypesRepository.create({
       ...createBaseTypeDto,
     });
     return await this.basetypesRepository.save(newBaseType);

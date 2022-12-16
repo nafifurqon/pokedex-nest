@@ -15,7 +15,7 @@ export class MonsterTypeService {
   async create(
     createMonsterTypeDto: CreateMonsterTypeDto,
   ): Promise<MonsterType> {
-    const newMonsterType = await this.monsterTypesRepository.create({
+    const newMonsterType = this.monsterTypesRepository.create({
       ...createMonsterTypeDto,
     });
     return await this.monsterTypesRepository.save(newMonsterType);
