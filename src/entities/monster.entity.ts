@@ -3,12 +3,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
   JoinColumn,
-  OneToMany,
+  ManyToMany,
+  ManyToOne,
+  JoinTable,
 } from 'typeorm';
-import { BaseType } from './base-type.entity';
-import { Type } from './type.entity';
+import { BaseType } from './base_type.entity';
+import { MonsterType } from './monster_type.entity';
 
 @Entity()
 export class Monster {
@@ -25,11 +26,21 @@ export class Monster {
   description?: string;
 
   @ApiProperty({ type: () => BaseType })
-  @OneToOne(() => BaseType, (baseType) => baseType.id, { onDelete: 'CASCADE' })
+  @ManyToOne(() => BaseType, (baseType) => baseType.monsters, {
+    onDelete: 'SET NULL',
+  })
   @JoinColumn()
   baseType: BaseType;
 
-  @ApiProperty()
-  @OneToMany(() => Type, (types) => types.monster)
-  types: Type[];
+  @ApiProperty({ type: () => [MonsterType] })
+  @ManyToMany(() => MonsterType, (monsterTypes) => monsterTypes.monsters)
+  @JoinTable({
+    joinColumn: {
+      name: 'monsterId',
+    },
+    inverseJoinColumn: {
+      name: 'monsterTypeId',
+    },
+  })
+  monsterTypes: MonsterType[];
 }

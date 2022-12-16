@@ -11,5 +11,9 @@ export class CreateMonsterDto {
 
   @ApiProperty()
   @IsUUID()
-  baseTypeId: string;
+  baseType: string;
+
+  @ApiProperty()
+  @IsUUID('all', { each: true })
+  monsterTypes: string[];
 }

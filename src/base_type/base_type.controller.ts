@@ -17,7 +17,7 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { BaseType } from 'src/entities/base-type.entity';
+import { BaseType } from 'src/entities/base_type.entity';
 import { BaseTypeService } from './base_type.service';
 import { CreateBaseTypeDto } from './dto/create-base_type.dto';
 import { UpdateBaseTypeDto } from './dto/update-base_type.dto';

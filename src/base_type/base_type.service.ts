@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BaseType } from 'src/entities/base-type.entity';
+import { BaseType } from 'src/entities/base_type.entity';
 import { CreateBaseTypeDto } from './dto/create-base_type.dto';
 import { UpdateBaseTypeDto } from './dto/update-base_type.dto';
 
@@ -23,13 +23,13 @@ export class BaseTypeService {
     if (name) {
       return await this.basetypesRepository
         .createQueryBuilder('base_type')
-        .leftJoinAndSelect('base_type.monsterId', 'monster')
+        .leftJoinAndSelect('base_type.monsters', 'monster')
         .where('base_type.name like :name', { name: `%${name}%` })
         .getMany();
     }
     return await this.basetypesRepository.find({
       relations: {
-        monsterId: true,
+        monsters: true,
       },
     });
   }
