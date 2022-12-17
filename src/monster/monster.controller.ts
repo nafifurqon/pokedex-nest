@@ -21,6 +21,7 @@ import { CreateMonsterDto } from './dto/create-monster.dto';
 import { UpdateMonsterDto } from './dto/update-monster.dto';
 import { Monster } from '../entities/monster.entity';
 import { MonsterService } from './monster.service';
+import { MonsterSortOption, OrderOption } from './enums';
 
 @ApiTags('monsters')
 @Controller('monsters')
@@ -29,9 +30,22 @@ export class MonsterController {
 
   @ApiOkResponse({ type: Monster, isArray: true })
   @ApiQuery({ name: 'name', required: false })
+  @ApiQuery({ name: 'types', required: false })
+  @ApiQuery({ name: 'sort', required: false, enum: MonsterSortOption })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    enum: OrderOption,
+    example: OrderOption.ASC,
+  })
   @Get()
-  async findAll(@Query('name') name?: string): Promise<Monster[]> {
-    return await this.monstersService.findAll(name);
+  async findAll(
+    @Query('name') name?: string,
+    @Query('types') types?: string[],
+    @Query('sort') sort?: MonsterSortOption,
+    @Query('order') order?: OrderOption,
+  ): Promise<Monster[]> {
+    return await this.monstersService.findAll(name, types, sort, order);
   }
 
   @ApiOkResponse({ type: Monster })

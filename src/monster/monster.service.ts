@@ -8,6 +8,7 @@ import { BaseType } from 'src/entities/base_type.entity';
 import { MonsterType } from 'src/entities/monster_type.entity';
 import { Stat } from 'src/entities/stat.entity';
 import { CreateStatDto } from 'src/monster/dto/create-stat.dto';
+import { MonsterSortOption, OrderOption } from './enums';
 
 @Injectable()
 export class MonsterService {
@@ -21,14 +22,49 @@ export class MonsterService {
     private statRepository: Repository<Stat>,
   ) {}
 
-  async findAll(name?: string): Promise<Monster[]> {
-    if (name)
-      return await this.monstersRepository
+  async findAll(
+    name?: string,
+    types?: string[],
+    sort?: MonsterSortOption,
+    order?: OrderOption,
+  ): Promise<Monster[]> {
+    console.log('sort', sort);
+    console.log('order', order);
+
+    if (name || types?.length || sort) {
+      const query = this.monstersRepository
         .createQueryBuilder('monster')
         .leftJoinAndSelect('monster.baseType', 'base_type')
-        .leftJoinAndSelect('monster.monsterTypes', 'monster_type')
-        .where('monster.name like :name', { name: `%${name}%` })
-        .getMany();
+        .leftJoinAndSelect('monster.monsterTypes', 'monster_type');
+
+      if (name) {
+        query.where('monster.name LIKE :name', { name: `%${name}%` });
+      }
+
+      if (types?.length) {
+        if (name) {
+          query.orWhere('monster_type.id IN (:...types)', {
+            types: [...types],
+          });
+        } else {
+          query.where('monster_type.id IN (:...types)', {
+            types: [...types],
+          });
+        }
+      }
+
+      if (sort) {
+        console.log('order', `${order || OrderOption.ASC}`);
+        console.log('sort', `monster.${sort.toLowerCase()}`);
+        query.orderBy(
+          `monster.${sort.toLowerCase()}`,
+          `${order || OrderOption.ASC}`,
+        );
+      }
+
+      return await query.getMany();
+    }
+
     return await this.monstersRepository.find({
       relations: {
         baseType: true,

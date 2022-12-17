@@ -22,18 +22,11 @@ export class MonsterTypeService {
   }
 
   async findAll(): Promise<MonsterType[]> {
-    return await this.monsterTypesRepository.find({
-      relations: {
-        monsters: true,
-      },
-    });
+    return await this.monsterTypesRepository.find();
   }
 
   async findOne(id: string): Promise<MonsterType> {
-    return await this.monsterTypesRepository.findOne({
-      where: { id },
-      relations: { monsters: true },
-    });
+    return await this.monsterTypesRepository.findOneBy({ id });
   }
 
   async update(
