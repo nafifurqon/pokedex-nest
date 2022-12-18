@@ -12,14 +12,15 @@ export class UserService {
   ) {}
 
   async register(data: RegisterUserRequestDto): Promise<User> {
-    console.log('data', data);
     const user = new User();
     user.email = data.email;
     user.password = data.password;
     user.role = UserRole.USER;
 
-    const test = await this.usersRepository.save(user);
+    return await this.usersRepository.save(user);
+  }
 
-    return test;
+  async getByEmail(email: string): Promise<User | undefined> {
+    return await this.usersRepository.findOneBy({ email });
   }
 }

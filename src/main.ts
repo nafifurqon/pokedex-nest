@@ -12,6 +12,15 @@ async function bootstrap() {
     .setTitle('Pokedex API')
     .setDescription('API for manage Pokemon data and catch pokemon')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        description: `Please enter token in following format: <JWT>`,
+        name: 'Authorization',
+        type: 'http',
+        in: 'Header',
+      },
+      'access_token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

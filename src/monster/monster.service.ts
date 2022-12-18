@@ -28,9 +28,6 @@ export class MonsterService {
     sort?: MonsterSortOption,
     order?: OrderOption,
   ): Promise<Monster[]> {
-    console.log('sort', sort);
-    console.log('order', order);
-
     if (name || types?.length || sort) {
       const query = this.monstersRepository
         .createQueryBuilder('monster')
@@ -54,8 +51,6 @@ export class MonsterService {
       }
 
       if (sort) {
-        console.log('order', `${order || OrderOption.ASC}`);
-        console.log('sort', `monster.${sort.toLowerCase()}`);
         query.orderBy(
           `monster.${sort.toLowerCase()}`,
           `${order || OrderOption.ASC}`,
@@ -85,7 +80,6 @@ export class MonsterService {
   }
 
   async create(data: CreateMonsterDto): Promise<Monster> {
-    console.log('data', data);
     const baseType = await this.basetypesRepository.findOneBy({
       id: data.baseType,
     });
@@ -114,7 +108,6 @@ export class MonsterService {
   }
 
   async update(id: string, data: UpdateMonsterDto): Promise<Monster> {
-    console.log('data', data);
     const baseType = await this.basetypesRepository.findOneBy({
       id: data.baseType,
     });
