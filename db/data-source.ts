@@ -5,8 +5,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: 'db.sqlite',
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/db/migrations/*.js'],
-  synchronize: true,
-	logging: true,
+  logging: true,
 };
 
 const dataSource = new DataSource(dataSourceOptions);
