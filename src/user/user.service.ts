@@ -20,7 +20,11 @@ export class UserService {
     return await this.usersRepository.save(user);
   }
 
-  async getByEmail(email: string): Promise<User | undefined> {
+  async findByEmail(email: string): Promise<User | undefined> {
     return await this.usersRepository.findOneBy({ email });
+  }
+
+  async findById(id: string): Promise<User | undefined> {
+    return await this.usersRepository.findOneBy({ id });
   }
 }

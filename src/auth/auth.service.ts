@@ -19,7 +19,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<User | undefined> {
-    const user = await this.userService.getByEmail(email);
+    const user = await this.userService.findByEmail(email);
 
     if (!user) throw new BadRequestException();
 

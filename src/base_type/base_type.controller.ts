@@ -8,15 +8,19 @@ import {
   Delete,
   Query,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+import { AdminRoleGuard } from 'src/auth/admin-role.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { BaseType } from 'src/entities/base_type.entity';
 import { BaseTypeService } from './base_type.service';
 import { CreateBaseTypeDto } from './dto/create-base_type.dto';
@@ -29,7 +33,10 @@ export class BaseTypeController {
 
   @ApiCreatedResponse({ type: BaseType })
   @ApiBadRequestResponse()
+  @ApiBearerAuth('access_token')
   @Post()
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   async create(@Body() createBaseTypeDto: CreateBaseTypeDto) {
     return await this.baseTypeService.create(createBaseTypeDto);
   }
@@ -56,7 +63,10 @@ export class BaseTypeController {
 
   @ApiOkResponse({ type: BaseType })
   @ApiBadRequestResponse()
+  @ApiBearerAuth('access_token')
   @Patch(':id')
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateBaseTypeDto: UpdateBaseTypeDto,
@@ -65,7 +75,10 @@ export class BaseTypeController {
   }
 
   @ApiOkResponse({ type: BaseType })
+  @ApiBearerAuth('access_token')
   @Delete(':id')
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.baseTypeService.remove(id);
   }

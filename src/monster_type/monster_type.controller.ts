@@ -7,18 +7,22 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { MonsterTypeService } from './monster_type.service';
 import { CreateMonsterTypeDto } from './dto/create-monster_type.dto';
 import { UpdateMonsterTypeDto } from './dto/update-monster_type.dto';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { MonsterType } from 'src/entities/monster_type.entity';
+import { AdminRoleGuard } from 'src/auth/admin-role.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @ApiTags('monster-types')
 @Controller('monster-types')
@@ -27,7 +31,10 @@ export class MonsterTypeController {
 
   @ApiCreatedResponse({ type: MonsterType })
   @ApiBadRequestResponse()
+  @ApiBearerAuth('access_token')
   @Post()
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   async create(
     @Body() createMonsterTypeDto: CreateMonsterTypeDto,
   ): Promise<MonsterType> {
@@ -56,7 +63,10 @@ export class MonsterTypeController {
 
   @ApiOkResponse({ type: MonsterType })
   @ApiBadRequestResponse()
+  @ApiBearerAuth('access_token')
   @Patch(':id')
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateMonsterTypeDto: UpdateMonsterTypeDto,
@@ -65,7 +75,10 @@ export class MonsterTypeController {
   }
 
   @ApiOkResponse({ type: MonsterType })
+  @ApiBearerAuth('access_token')
   @Delete(':id')
+  @UseGuards(AdminRoleGuard)
+  @UseGuards(JwtAuthGuard)
   async remove(@Param('id') id: string): Promise<MonsterType> {
     return await this.monsterTypeService.remove(id);
   }
