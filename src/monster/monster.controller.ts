@@ -72,7 +72,6 @@ export class MonsterController {
     @Param('id') id: string,
     @Request() req: any,
   ): Promise<Monster> {
-    console.log('req.user', req.user);
     const monster = this.monstersService.findOne(id, req.user.userId);
 
     if (!monster) {
