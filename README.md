@@ -36,6 +36,7 @@ $ npm install
 
 ```bash
 # development
+$ npm run migration:run
 $ npm run start
 
 # watch mode
