@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -26,6 +27,7 @@ import { MonsterService } from './monster.service';
 import { MonsterSortOption, OrderOption } from './enums';
 import { AdminRoleGuard } from 'src/auth/admin-role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CatchMonsterDto } from './dto/catch-monster.dto';
 
 @ApiTags('monsters')
 @Controller('monsters')
@@ -33,6 +35,7 @@ export class MonsterController {
   constructor(private monstersService: MonsterService) {}
 
   @ApiOkResponse({ type: Monster, isArray: true })
+  @ApiBearerAuth('access_token')
   @ApiQuery({ name: 'name', required: false })
   @ApiQuery({ name: 'types', required: false })
   @ApiQuery({ name: 'sort', required: false, enum: MonsterSortOption })
@@ -43,6 +46,7 @@ export class MonsterController {
     example: OrderOption.ASC,
   })
   @Get()
+  @UseGuards(JwtAuthGuard)
   async findAll(
     @Query('name') name?: string,
     @Query('types') types?: string[],
@@ -54,9 +58,15 @@ export class MonsterController {
 
   @ApiOkResponse({ type: Monster })
   @ApiNotFoundResponse()
+  @ApiBearerAuth('access_token')
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Monster> {
-    const monster = this.monstersService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  async findOne(
+    @Param('id') id: string,
+    @Request() req: any,
+  ): Promise<Monster> {
+    console.log('req.user', req.user);
+    const monster = this.monstersService.findOne(id, req.user.userId);
 
     if (!monster) {
       throw new NotFoundException();
@@ -92,5 +102,17 @@ export class MonsterController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.monstersService.remove(id);
+  }
+
+  @ApiOkResponse({ type: Monster })
+  @ApiNotFoundResponse()
+  @ApiBearerAuth('access_token')
+  @Post('/catch')
+  @UseGuards(JwtAuthGuard)
+  async catch(
+    @Request() req: any,
+    @Body() body: CatchMonsterDto,
+  ): Promise<Monster> {
+    return await this.monstersService.catchMonster(body.monster, req.user);
   }
 }

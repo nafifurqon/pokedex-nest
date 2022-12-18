@@ -53,4 +53,7 @@ export class Monster {
   @OneToOne(() => Stat, (stat) => stat.monster, { onDelete: 'SET NULL' })
   @JoinColumn()
   stat: Stat;
+
+  @ApiProperty({ nullable: true })
+  catched: boolean;
 }

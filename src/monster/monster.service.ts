@@ -9,6 +9,9 @@ import { MonsterType } from 'src/entities/monster_type.entity';
 import { Stat } from 'src/entities/stat.entity';
 import { CreateStatDto } from 'src/monster/dto/create-stat.dto';
 import { MonsterSortOption, OrderOption } from './enums';
+import { JwtPayloadDto } from 'src/auth/dto/jwt-payload.dto';
+import { CatchedMonster } from 'src/entities/catched_monster.entity';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MonsterService {
@@ -20,6 +23,9 @@ export class MonsterService {
     private monsterTypesRepository: Repository<MonsterType>,
     @InjectRepository(Stat)
     private statRepository: Repository<Stat>,
+    @InjectRepository(CatchedMonster)
+    private catchedMonsterRepository: Repository<CatchedMonster>,
+    private userService: UserService,
   ) {}
 
   async findAll(
@@ -27,7 +33,9 @@ export class MonsterService {
     types?: string[],
     sort?: MonsterSortOption,
     order?: OrderOption,
+    userId?: string,
   ): Promise<Monster[]> {
+    let monsters: Monster[] = [];
     if (name || types?.length || sort) {
       const query = this.monstersRepository
         .createQueryBuilder('monster')
@@ -57,26 +65,60 @@ export class MonsterService {
         );
       }
 
-      return await query.getMany();
+      monsters = await query.getMany();
+    } else {
+      monsters = await this.monstersRepository.find({
+        relations: {
+          baseType: true,
+          monsterTypes: true,
+          stat: true,
+        },
+      });
     }
 
-    return await this.monstersRepository.find({
-      relations: {
-        baseType: true,
-        monsterTypes: true,
-        stat: true,
-      },
+    const cactchedMonsters: CatchedMonster[] =
+      await this.catchedMonsterRepository.find({
+        where: {
+          userId,
+        },
+      });
+
+    return monsters.map((monster) => {
+      const foundCatchMonster = cactchedMonsters.find(
+        (cm) => cm.monsterId === monster.id,
+      );
+
+      return {
+        ...monster,
+        catched: foundCatchMonster ? true : false,
+      };
     });
   }
 
-  async findOne(id: string): Promise<Monster> {
-    return this.monstersRepository.findOne({
-      where: { id },
+  async findOne(monsterId: string, userId?: string): Promise<Monster> {
+    const monster = await this.monstersRepository.findOne({
+      where: { id: monsterId },
       relations: {
         baseType: true,
         monsterTypes: true,
       },
     });
+
+    if (userId) {
+      const catchedMonster = await this.catchedMonsterRepository.findOneBy({
+        monsterId,
+        userId,
+      });
+      monster.catched =
+        catchedMonster.monsterId === monsterId &&
+        catchedMonster.userId === userId;
+
+      return monster;
+    }
+
+    monster.catched = false;
+
+    return monster;
   }
 
   async create(data: CreateMonsterDto): Promise<Monster> {
@@ -148,5 +190,28 @@ export class MonsterService {
     }
     stat = await this.statRepository.save({ ...stat, ...data });
     return stat;
+  }
+
+  async catchMonster(
+    monsterId: string,
+    jwtUser: JwtPayloadDto,
+  ): Promise<Monster> {
+    const { userId } = jwtUser;
+
+    const monster = await this.findOne(monsterId);
+
+    if (!monster) {
+      throw new NotFoundException('Monster not found!');
+    }
+
+    const user = await this.userService.findById(userId);
+
+    const catchedMonster = this.catchedMonsterRepository.create({
+      monster,
+      user,
+    });
+    await this.catchedMonsterRepository.save(catchedMonster);
+
+    return await this.findOne(monsterId, userId);
   }
 }
