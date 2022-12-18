@@ -28,6 +28,9 @@ import { MonsterSortOption, OrderOption } from './enums';
 import { AdminRoleGuard } from 'src/auth/admin-role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CatchMonsterDto } from './dto/catch-monster.dto';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { UserRole } from 'src/app.utils';
 
 @ApiTags('monsters')
 @Controller('monsters')
@@ -46,6 +49,8 @@ export class MonsterController {
     example: OrderOption.ASC,
   })
   @Get()
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.USER)
   @UseGuards(JwtAuthGuard)
   async findAll(
     @Query('name') name?: string,
@@ -60,6 +65,8 @@ export class MonsterController {
   @ApiNotFoundResponse()
   @ApiBearerAuth('access_token')
   @Get(':id')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN, UserRole.USER)
   @UseGuards(JwtAuthGuard)
   async findOne(
     @Param('id') id: string,
@@ -79,7 +86,8 @@ export class MonsterController {
   @ApiBadRequestResponse()
   @ApiBearerAuth('access_token')
   @Post()
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard)
   async create(@Body() body: CreateMonsterDto): Promise<Monster> {
     return await this.monstersService.create(body);
@@ -98,7 +106,8 @@ export class MonsterController {
   @ApiOkResponse({ type: Monster })
   @ApiBearerAuth('access_token')
   @Delete(':id')
-  @UseGuards(AdminRoleGuard)
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.ADMIN)
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.monstersService.remove(id);
@@ -108,6 +117,8 @@ export class MonsterController {
   @ApiNotFoundResponse()
   @ApiBearerAuth('access_token')
   @Post('/catch')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.USER)
   @UseGuards(JwtAuthGuard)
   async catch(
     @Request() req: any,
