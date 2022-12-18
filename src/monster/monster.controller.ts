@@ -98,8 +98,11 @@ export class MonsterController {
   @Patch(':id')
   @UseGuards(AdminRoleGuard)
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateTodoDto: UpdateMonsterDto) {
-    return this.monstersService.update(id, updateTodoDto);
+  update(
+    @Param('id') id: string,
+    @Body() body: UpdateMonsterDto,
+  ): Promise<Monster> {
+    return this.monstersService.update(id, body);
   }
 
   @ApiOkResponse({ type: Monster })

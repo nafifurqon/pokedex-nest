@@ -138,7 +138,8 @@ export class MonsterService {
       throw new NotFoundException('Monster type not found!');
     }
 
-    const stat = await this.setStat(data.stat);
+    let stat = this.statRepository.create({ ...data.stat });
+    stat = await this.statRepository.save(stat);
 
     const newMonster = this.monstersRepository.create({
       ...data,
