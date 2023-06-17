@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsInt, Max } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,11 +8,9 @@ import {
   ManyToMany,
   ManyToOne,
   JoinTable,
-  OneToOne,
 } from 'typeorm';
 import { BaseType } from './base_type.entity';
 import { MonsterType } from './monster_type.entity';
-import { Stat } from './stat.entity';
 
 @Entity()
 export class Monster {
@@ -46,13 +45,29 @@ export class Monster {
   })
   monsterTypes: MonsterType[];
 
-  // @Column('uuid')
-  // statId: string;
+  @ApiProperty()
+  @Column()
+  @IsInt()
+  @Max(500)
+  hp: number;
 
   @ApiProperty()
-  @OneToOne(() => Stat, (stat) => stat.monster, { onDelete: 'SET NULL' })
-  @JoinColumn()
-  stat: Stat;
+  @Column()
+  @IsInt()
+  @Max(500)
+  attack: number;
+
+  @ApiProperty()
+  @Column()
+  @IsInt()
+  @Max(500)
+  def: number;
+
+  @ApiProperty()
+  @Column()
+  @IsInt()
+  @Max(500)
+  speed: number;
 
   @ApiProperty({ nullable: true })
   catched: boolean;

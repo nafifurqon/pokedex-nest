@@ -71,7 +71,6 @@ export class MonsterService {
         relations: {
           baseType: true,
           monsterTypes: true,
-          stat: true,
         },
       });
     }
@@ -138,14 +137,10 @@ export class MonsterService {
       throw new NotFoundException('Monster type not found!');
     }
 
-    let stat = this.statRepository.create({ ...data.stat });
-    stat = await this.statRepository.save(stat);
-
     const newMonster = this.monstersRepository.create({
       ...data,
       baseType,
       monsterTypes,
-      stat,
     });
     return await this.monstersRepository.save(newMonster);
   }
@@ -167,15 +162,12 @@ export class MonsterService {
       throw new NotFoundException('Monster type not found!');
     }
 
-    const stat = await this.setStat(data.stat);
-
     const monster = await this.findOne(id);
     return await this.monstersRepository.save({
       ...monster,
       ...data,
       baseType,
       monsterTypes: monsterTypes,
-      stat,
     });
   }
 

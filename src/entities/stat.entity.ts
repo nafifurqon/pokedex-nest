@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 import { IsInt, Max } from 'class-validator';
-import { Monster } from './monster.entity';
 
 @Entity()
 export class Stat {
@@ -32,7 +31,4 @@ export class Stat {
   @IsInt()
   @Max(500)
   speed: number;
-
-  @OneToOne(() => Monster, (monster) => monster.stat)
-  monster: Monster;
 }

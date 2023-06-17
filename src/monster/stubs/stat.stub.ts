@@ -8,7 +8,6 @@ export const statsStub = (): Stat[] => {
       attack: 150,
       def: 200,
       speed: 250,
-      monster: null,
     },
     {
       id: 'a573e263-3537-4dec-b861-e9f769fc2ed3',
@@ -16,7 +15,6 @@ export const statsStub = (): Stat[] => {
       attack: 350,
       def: 400,
       speed: 450,
-      monster: null,
     },
     {
       id: 'af5e45b3-422b-4e5b-ab22-060300feb7a0',
@@ -24,7 +22,6 @@ export const statsStub = (): Stat[] => {
       attack: 200,
       def: 250,
       speed: 300,
-      monster: null,
     },
     {
       id: '91364d2c-9b2c-4e23-80d0-e04c60848c87',
@@ -32,7 +29,6 @@ export const statsStub = (): Stat[] => {
       attack: 250,
       def: 300,
       speed: 350,
-      monster: null,
     },
   ];
 };
