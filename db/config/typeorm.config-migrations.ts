@@ -18,10 +18,10 @@ export const dataSourceOptions: DataSourceOptions = {
   migrations: ['dist/db/migrations/postgres/*.js'],
   // synchronize: true,
   logging: true,
-  // ssl: {
-  //   rejectUnauthorized: false,
-  // },
-  ssl: false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  // ssl: false,
 };
 
 const dataSource = new DataSource(dataSourceOptions);

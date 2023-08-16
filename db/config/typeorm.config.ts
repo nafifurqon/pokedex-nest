@@ -24,7 +24,10 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       },
       synchronize: false,
       logging: true,
-      ssl: false,
+      // ssl: false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     };
   },
 };
