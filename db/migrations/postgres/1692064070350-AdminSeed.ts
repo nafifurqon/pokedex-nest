@@ -12,7 +12,7 @@ export class AdminSeed1671364741796 implements MigrationInterface {
 
     await queryRunner.query(
       `
-			INSERT INTO public.user (id, email, password, role)
+			INSERT INTO user (id, email, password, role)
 			VALUES('7c60299c-199d-4eb9-a36c-b233a3f9ae5a', 'admin@pokedex.com', '${password}', 'ADMIN');			
 			`,
     );
