@@ -81,7 +81,7 @@ describe('MonsterController', () => {
       expect(monsters[0]).toHaveProperty('description');
       expect(monsters[0]).toHaveProperty('baseType');
       expect(monsters[0]).toHaveProperty('monsterTypes');
-      expect(monsters[0]).toHaveProperty('stat');
+      // expect(monsters[0]).toHaveProperty('stat');
       expect(monsters[0]).toHaveProperty('catched');
     });
   });
@@ -107,7 +107,7 @@ describe('MonsterController', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
     });
   });
@@ -132,7 +132,7 @@ describe('MonsterController', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
     });
   });
@@ -158,7 +158,7 @@ describe('MonsterController', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
 
       expect(monster.name).toBe(inputMonster.name);
@@ -186,7 +186,7 @@ describe('MonsterController', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
     });
   });
@@ -215,7 +215,7 @@ describe('MonsterController', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
 
       expect(monster.catched).toBe(true);

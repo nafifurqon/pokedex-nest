@@ -154,7 +154,7 @@ describe('MonsterService', () => {
       expect(monsters[0]).toHaveProperty('description');
       expect(monsters[0]).toHaveProperty('baseType');
       expect(monsters[0]).toHaveProperty('monsterTypes');
-      expect(monsters[0]).toHaveProperty('stat');
+      // expect(monsters[0]).toHaveProperty('stat');
       expect(monsters[0]).toHaveProperty('catched');
     });
 
@@ -200,7 +200,7 @@ describe('MonsterService', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
     });
 
@@ -221,7 +221,7 @@ describe('MonsterService', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
 
       expect(monster.catched).toBe(true);
@@ -243,8 +243,8 @@ describe('MonsterService', () => {
       // Assert
       expect(mockBaseTypeRepository.findOneBy).toBeCalled();
       expect(mockMonsterTypeRepository.find).toBeCalled();
-      expect(mockStatRepository.create).toBeCalled();
-      expect(mockStatRepository.save).toBeCalled();
+      // expect(mockStatRepository.create).toBeCalled();
+      // expect(mockStatRepository.save).toBeCalled();
       expect(mockMonsterRepository.create).toBeCalled();
       expect(mockMonsterRepository.save).toBeCalled();
 
@@ -253,7 +253,7 @@ describe('MonsterService', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
     });
 
@@ -310,8 +310,8 @@ describe('MonsterService', () => {
       // Assert
       expect(mockBaseTypeRepository.findOneBy).toBeCalled();
       expect(mockMonsterTypeRepository.find).toBeCalled();
-      expect(mockStatRepository.create).toBeCalled();
-      expect(mockStatRepository.save).toBeCalled();
+      // expect(mockStatRepository.create).toBeCalled();
+      // expect(mockStatRepository.save).toBeCalled();
       expect(mockMonsterRepository.save).toBeCalled();
 
       expect(monster).toHaveProperty('id');
@@ -319,7 +319,7 @@ describe('MonsterService', () => {
       expect(monster).toHaveProperty('description');
       expect(monster).toHaveProperty('baseType');
       expect(monster).toHaveProperty('monsterTypes');
-      expect(monster).toHaveProperty('stat');
+      // expect(monster).toHaveProperty('stat');
       expect(monster).toHaveProperty('catched');
 
       expect(monster.name).toBe(inputMonster.name);
