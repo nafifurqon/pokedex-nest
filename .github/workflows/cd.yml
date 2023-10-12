@@ -20,5 +20,5 @@ jobs:
         script: |
           cd ~/pokedex-nest
           git pull origin master
-          npm install
-          pm2 restart pokedex-nest
+          /home/ubuntu/.nvm/versions/node/v18.18.0/bin/npm install
+          /home/ubuntu/.nvm/versions/node/v18.18.0/bin/pm2 restart pokedex-nest
