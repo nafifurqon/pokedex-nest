@@ -10,7 +10,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Pokedex API')
-    .setDescription('This is an API for manage Pokemon data and catch pokemon')
+    .setDescription('API for manage Pokemon data and catch pokemon')
     .setVersion('1.0')
     .addBearerAuth(
       {
