@@ -24,13 +24,10 @@ describe('MonsterService', () => {
 
   const mockMonsterRepository = {
     createQueryBuilder: jest.fn(),
+    // find is not used by current implementation of findAll (uses query builder)
     find: jest.fn(() => {
       return monstersStub();
     }),
-    leftJoinAndSelect: jest.fn(),
-    where: jest.fn(),
-    orWhere: jest.fn(),
-    orderBy: jest.fn(),
     findOne: jest.fn(() => {
       return monstersStub()[0];
     }),
@@ -79,6 +76,18 @@ describe('MonsterService', () => {
   };
 
   beforeAll(async () => {
+    // provide a chainable mock query builder used by findAll
+    const mockQueryBuilder = {
+      leftJoinAndSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      offset: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      getManyAndCount: jest.fn(() => [monstersStub(), monstersStub().length]),
+    };
+    mockMonsterRepository.createQueryBuilder = jest.fn(() => mockQueryBuilder);
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MonsterService,
@@ -138,45 +147,56 @@ describe('MonsterService', () => {
 
     it('should call monsterRepository and catchedMonsterRepository', async () => {
       // Action
-      await service.findAll();
+      const payload = { page: 1, limit: 10 } as any;
+      await service.findAll(payload);
 
       // Assert
-      expect(mockMonsterRepository.find).toBeCalled();
+      expect(mockMonsterRepository.createQueryBuilder).toBeCalled();
+      expect(mockCatchedMonsterRepository.find).toBeCalled();
     });
 
     it('should return all monsters', async () => {
       // Action
-      const monsters = await service.findAll();
+      const payload = { page: 1, limit: 10 } as any;
+      const res = await service.findAll(payload);
 
       // Assert
-      expect(monsters[0]).toHaveProperty('id');
-      expect(monsters[0]).toHaveProperty('name');
-      expect(monsters[0]).toHaveProperty('description');
-      expect(monsters[0]).toHaveProperty('baseType');
-      expect(monsters[0]).toHaveProperty('monsterTypes');
-      // expect(monsters[0]).toHaveProperty('stat');
-      expect(monsters[0]).toHaveProperty('catched');
+      expect(res.data[0]).toHaveProperty('id');
+      expect(res.data[0]).toHaveProperty('name');
+      expect(res.data[0]).toHaveProperty('description');
+      expect(res.data[0]).toHaveProperty('baseType');
+      expect(res.data[0]).toHaveProperty('monsterTypes');
+      // expect(res.data[0]).toHaveProperty('stat');
+      expect(res.data[0]).toHaveProperty('catched');
+      expect(res.total_data).toBeDefined();
     });
 
     it('should return all monsters with catched monster', async () => {
       // Arrange
       const userId = jwtUserStub().userId;
-      mockMonsterRepository.find = jest.fn(() => {
-        return monstersWithCatchStub();
+      // replace query builder to return monstersWithCatchStub
+      mockMonsterRepository.createQueryBuilder = jest.fn(() => {
+        return {
+          leftJoinAndSelect: jest.fn().mockReturnThis(),
+          where: jest.fn().mockReturnThis(),
+          andWhere: jest.fn().mockReturnThis(),
+          orderBy: jest.fn().mockReturnThis(),
+          offset: jest.fn().mockReturnThis(),
+          limit: jest.fn().mockReturnThis(),
+          getManyAndCount: jest.fn(() => [
+            monstersWithCatchStub(),
+            monstersWithCatchStub().length,
+          ]),
+        } as any;
       });
 
       // Action
-      const monsters = await service.findAll(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        userId,
-      );
+      const payload = { page: 1, limit: 10 } as any;
+      const res = await service.findAll(payload, userId);
 
       // Assert
-      expect(monsters[0]).toHaveProperty('catched');
-      expect(monsters[0].catched).toBe(true);
+      expect(res.data[0]).toHaveProperty('catched');
+      expect(res.data[0].catched).toBe(true);
     });
   });
 

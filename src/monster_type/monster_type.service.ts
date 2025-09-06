@@ -4,6 +4,10 @@ import { Repository } from 'typeorm';
 import { MonsterType } from 'src/entities/monster_type.entity';
 import { CreateMonsterTypeDto } from './dto/create-monster_type.dto';
 import { UpdateMonsterTypeDto } from './dto/update-monster_type.dto';
+import {
+  FindAllMonsterTypeQueryDto,
+  FindAllMonsterTypeResponseDto,
+} from './dto/find-monster-type.dto';
 
 @Injectable()
 export class MonsterTypeService {
@@ -21,8 +25,23 @@ export class MonsterTypeService {
     return await this.monsterTypesRepository.save(newMonsterType);
   }
 
-  async findAll(): Promise<MonsterType[]> {
-    return await this.monsterTypesRepository.find();
+  async findAll(
+    query: FindAllMonsterTypeQueryDto,
+  ): Promise<FindAllMonsterTypeResponseDto> {
+    const { search, page, limit } = query;
+
+    const qb = this.monsterTypesRepository.createQueryBuilder('monsterType');
+
+    if (search) {
+      qb.andWhere('monsterType.name ILIKE :search', { search: `%${search}%` });
+    }
+
+    const offset = (page - 1) * limit;
+    qb.offset(offset).limit(limit);
+
+    const [data, total_data] = await qb.getManyAndCount();
+
+    return { data, total_data };
   }
 
   async findOne(id: string): Promise<MonsterType> {

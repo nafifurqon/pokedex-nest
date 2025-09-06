@@ -8,6 +8,7 @@ import {
   Delete,
   NotFoundException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { MonsterTypeService } from './monster_type.service';
 import { CreateMonsterTypeDto } from './dto/create-monster_type.dto';
@@ -23,6 +24,10 @@ import {
 import { MonsterType } from 'src/entities/monster_type.entity';
 import { AdminRoleGuard } from 'src/auth/admin-role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import {
+  FindAllMonsterTypeQueryDto,
+  FindAllMonsterTypeResponseDto,
+} from './dto/find-monster-type.dto';
 
 @ApiTags('monster-types')
 @Controller('monster-types')
@@ -41,11 +46,12 @@ export class MonsterTypeController {
     return await this.monsterTypeService.create(createMonsterTypeDto);
   }
 
-  @ApiOkResponse({ type: MonsterType, isArray: true })
-  // @ApiQuery({ name: 'name', required: false })
+  @ApiOkResponse({ type: FindAllMonsterTypeResponseDto, isArray: true })
   @Get()
-  async findAll(): Promise<MonsterType[]> {
-    return await this.monsterTypeService.findAll();
+  async findAll(
+    @Query() query: FindAllMonsterTypeQueryDto,
+  ): Promise<FindAllMonsterTypeResponseDto> {
+    return await this.monsterTypeService.findAll(query);
   }
 
   @ApiOkResponse({ type: MonsterType })

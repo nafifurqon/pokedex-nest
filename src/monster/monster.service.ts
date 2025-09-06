@@ -8,10 +8,14 @@ import { BaseType } from 'src/entities/base_type.entity';
 import { MonsterType } from 'src/entities/monster_type.entity';
 import { Stat } from 'src/entities/stat.entity';
 import { CreateStatDto } from 'src/monster/dto/create-stat.dto';
-import { MonsterSortOption, OrderOption } from './enums';
+import { OrderOption } from './enums';
 import { JwtPayloadDto } from 'src/auth/dto/jwt-payload.dto';
 import { CatchedMonster } from 'src/entities/catched_monster.entity';
 import { UserService } from 'src/user/user.service';
+import {
+  FindAllMonsterQueryDto,
+  FindAllMonsterResponseDto,
+} from './dto/find-monster.dto';
 
 @Injectable()
 export class MonsterService {
@@ -29,51 +33,39 @@ export class MonsterService {
   ) {}
 
   async findAll(
-    name?: string,
-    types?: string[],
-    sort?: MonsterSortOption,
-    order?: OrderOption,
+    payload: FindAllMonsterQueryDto,
     userId?: string,
-  ): Promise<Monster[]> {
-    let monsters: Monster[] = [];
-    if (name || types?.length || sort) {
-      const query = this.monstersRepository
-        .createQueryBuilder('monster')
-        .leftJoinAndSelect('monster.baseType', 'base_type')
-        .leftJoinAndSelect('monster.monsterTypes', 'monster_type');
+  ): Promise<FindAllMonsterResponseDto> {
+    const { search, sort, order, page, limit } = payload;
+    const types = payload.types ? payload.types.split(',') : [];
 
-      if (name) {
-        query.where('monster.name LIKE :name', { name: `%${name}%` });
-      }
+    let data: Monster[] = [];
+    let totalData = 0;
 
-      if (types?.length) {
-        if (name) {
-          query.orWhere('monster_type.id IN (:...types)', {
-            types: [...types],
-          });
-        } else {
-          query.where('monster_type.id IN (:...types)', {
-            types: [...types],
-          });
-        }
-      }
+    const query = this.monstersRepository
+      .createQueryBuilder('monster')
+      .leftJoinAndSelect('monster.baseType', 'base_type')
+      .leftJoinAndSelect('monster.monsterTypes', 'monster_type');
 
-      if (sort) {
-        query.orderBy(
-          `monster.${sort.toLowerCase()}`,
-          `${order || OrderOption.ASC}`,
-        );
-      }
-
-      monsters = await query.getMany();
-    } else {
-      monsters = await this.monstersRepository.find({
-        relations: {
-          baseType: true,
-          monsterTypes: true,
-        },
-      });
+    if (search) {
+      query.where('monster.name ILIKE :search', { search: `%${search}%` });
     }
+
+    if (types?.length) {
+      query.andWhere('monster_type.id IN (:...types)', { types: [...types] });
+    }
+
+    if (sort) {
+      query.orderBy(
+        `monster.${sort.toLowerCase()}`,
+        `${order || OrderOption.ASC}`,
+      );
+    }
+
+    const offset = (page - 1) * limit;
+    query.offset(offset).limit(limit);
+
+    [data, totalData] = await query.getManyAndCount();
 
     const cactchedMonsters: CatchedMonster[] =
       await this.catchedMonsterRepository.find({
@@ -82,7 +74,7 @@ export class MonsterService {
         },
       });
 
-    return monsters.map((monster) => {
+    data = data.map((monster) => {
       const foundCatchMonster = cactchedMonsters.find(
         (cm) => cm.monsterId === monster.id,
       );
@@ -92,6 +84,8 @@ export class MonsterService {
         catched: foundCatchMonster ? true : false,
       };
     });
+
+    return { data, total_data: totalData || data.length };
   }
 
   async findOne(monsterId: string, userId?: string): Promise<Monster> {

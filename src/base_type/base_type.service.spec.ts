@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BaseTypeService } from './base_type.service';
 import { BaseType } from '../entities/base_type.entity';
+import { Monster } from '../entities/monster.entity';
 
 describe('BaseTypeService', () => {
   let service: BaseTypeService;
@@ -12,6 +13,10 @@ describe('BaseTypeService', () => {
         BaseTypeService,
         {
           provide: getRepositoryToken(BaseType),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(Monster),
           useValue: {},
         },
       ],

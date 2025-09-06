@@ -4,6 +4,7 @@ import { BaseTypeController } from './base_type.controller';
 import { BaseTypeService } from './base_type.service';
 import { BaseType } from '../entities/base_type.entity';
 import { UserService } from '../user/user.service';
+import { Monster } from '../entities/monster.entity';
 
 describe('BaseTypeController', () => {
   let controller: BaseTypeController;
@@ -15,6 +16,10 @@ describe('BaseTypeController', () => {
         BaseTypeService,
         {
           provide: getRepositoryToken(BaseType),
+          useValue: {},
+        },
+        {
+          provide: getRepositoryToken(Monster),
           useValue: {},
         },
         {

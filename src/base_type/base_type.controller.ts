@@ -16,7 +16,6 @@ import {
   ApiCreatedResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { AdminRoleGuard } from 'src/auth/admin-role.guard';
@@ -25,6 +24,10 @@ import { BaseType } from 'src/entities/base_type.entity';
 import { BaseTypeService } from './base_type.service';
 import { CreateBaseTypeDto } from './dto/create-base_type.dto';
 import { UpdateBaseTypeDto } from './dto/update-base_type.dto';
+import {
+  FindAllBaseTypeQueryDto,
+  FindAllBaseTypeResponseDto,
+} from './dto/find-base-type.dto';
 
 @ApiTags('base-types')
 @Controller('base-types')
@@ -42,10 +45,11 @@ export class BaseTypeController {
   }
 
   @ApiOkResponse({ type: BaseType, isArray: true })
-  @ApiQuery({ name: 'name', required: false })
   @Get()
-  async findAll(@Query('name') name?: string): Promise<BaseType[]> {
-    return this.baseTypeService.findAll(name);
+  async findAll(
+    @Query() query: FindAllBaseTypeQueryDto,
+  ): Promise<FindAllBaseTypeResponseDto> {
+    return this.baseTypeService.findAll(query);
   }
 
   @ApiOkResponse({ type: BaseType })

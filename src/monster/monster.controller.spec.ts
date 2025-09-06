@@ -11,7 +11,7 @@ describe('MonsterController', () => {
 
   const mockMonsterService = {
     findAll: jest.fn(() => {
-      return monstersStub();
+      return { data: monstersStub(), total_data: monstersStub().length };
     }),
     findOne: jest.fn(() => {
       return monstersStub()[0];
@@ -71,18 +71,18 @@ describe('MonsterController', () => {
 
     it('should be get all monsters', async () => {
       // Action
-      const monsters = await controller.findAll();
+      const res = await controller.findAll({} as any);
 
       // Assert
       expect(mockMonsterService.findAll).toBeCalled();
 
-      expect(monsters[0]).toHaveProperty('id');
-      expect(monsters[0]).toHaveProperty('name');
-      expect(monsters[0]).toHaveProperty('description');
-      expect(monsters[0]).toHaveProperty('baseType');
-      expect(monsters[0]).toHaveProperty('monsterTypes');
-      // expect(monsters[0]).toHaveProperty('stat');
-      expect(monsters[0]).toHaveProperty('catched');
+      expect(res.data[0]).toHaveProperty('id');
+      expect(res.data[0]).toHaveProperty('name');
+      expect(res.data[0]).toHaveProperty('description');
+      expect(res.data[0]).toHaveProperty('baseType');
+      expect(res.data[0]).toHaveProperty('monsterTypes');
+      // expect(res.data[0]).toHaveProperty('stat');
+      expect(res.data[0]).toHaveProperty('catched');
     });
   });
 
