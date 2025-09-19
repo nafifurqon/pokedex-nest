@@ -103,8 +103,11 @@ export class MonsterService {
         userId,
       });
       monster.catched =
+        catchedMonster &&
         catchedMonster.monsterId === monsterId &&
-        catchedMonster.userId === userId;
+        catchedMonster.userId === userId
+          ? true
+          : false;
 
       return monster;
     }
